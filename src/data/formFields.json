@@ -1,0 +1,23 @@
+{
+  "name": {
+    "key": "name",
+    "label": "File name",
+    "placeholder": "Would you like to change the file's name?",
+    "type": "text",
+    "required": true
+  },
+  "author": {
+    "key": "author",
+    "label": "Author",
+    "placeholder": "Your name",
+    "type": "text",
+    "required": true
+  },
+
+  "fileURL": {
+    "key": "fileURL",
+    "label": "File",
+    "instructions": "Please choose a file of types .pdf, .xml, .jpg",
+    "placeholder": "Add a file to be uploaded"
+  }
+}
