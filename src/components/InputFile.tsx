@@ -20,14 +20,6 @@ export default function InputFile({ onFileChange, settings, state }: iProps) {
   // Properties
   const File = state === "" ? Placeholder : state;
 
-  // Methods
-  // async function onFileChange(event: any) {
-  //   const file = event.target.files[0];
-  //   const file_url = await uploadFile(file, metadata);
-  //   alert("File uploaded");
-  //   onChange(key, file_url);
-  // }
-
   return (
     <fieldset className="file-input">
       <label className="custom-file-chooser">

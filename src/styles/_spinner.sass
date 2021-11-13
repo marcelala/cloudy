@@ -1,0 +1,31 @@
+.error
+  height: 500px
+  width: 100%
+  color: $primary
+
+
+#loading
+  padding: $space-large
+
+.spinner-container
+  position: relative
+  display: flex
+  align-items: center
+  align-content: center
+  margin: $space-large auto
+  text-align: center
+  flex-direction: column
+
+  .spinner
+    border: 0.4rem solid rgba(0, 0, 0, 0.1)
+    border-top: 0.4rem solid #767676
+    border-radius: 50%
+    width: 8rem
+    height: 8rem
+    @include spin
+
+  h3
+    color: $primary
+    font: $font-secondary
+    text-align: center
+    font-weight: 400

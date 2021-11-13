@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { FormEvent, useCallback, useEffect, useState } from "react";
 import Spinner from "./components/Spinner";
-import "./App.css";
+import "./styles/index.sass";
 import Form from "components/Form";
 import iFile from "./types/iFile";
-import { getCollection } from "./firebaseServices/firestore";
+import { deleteDocument, getCollection } from "./firebaseServices/firestore";
 import CloudFile from "./components/CloudFile";
 function App() {
   const initialState: any[] = [];
@@ -22,11 +22,21 @@ function App() {
 
   useEffect(() => {
     getFiles("files");
+    console.log("fetch");
   }, [getFiles]);
 
   const Files = loadedData.map((file: iFile) => (
-    <CloudFile key={file.id} file={file} />
+    //@ts-ignore
+    <CloudFile key={file.id} file={file} onClick={onDelete} />
   ));
+
+  async function onDelete(e: FormEvent) {
+    const itemToDelete = e.currentTarget;
+    if (window.confirm("Are you sure you want to delete this file forever?")) {
+      await deleteDocument("topics", itemToDelete.id);
+      alert("Topic deleted");
+    }
+  }
 
   return (
     <div className="App">
