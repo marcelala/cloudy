@@ -9,7 +9,7 @@ import {
   updateDoc,
   getDoc,
   deleteDoc,
-} from "firebase/firestore/lite";
+} from "firebase/firestore";
 // Project files
 import { fireStoreInstance } from "./firebase";
 
@@ -43,7 +43,6 @@ export async function getCollection(path: string) {
   const list = snapshot.docs.map((doc) => {
     return { id: doc.id, ...doc.data() };
   });
-
   return list;
 }
 
