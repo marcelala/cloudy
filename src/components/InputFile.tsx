@@ -1,7 +1,6 @@
 // NPM packages
-import { FormEvent, useState } from "react";
 // Project files
-import Placeholder from "assets/images/placeholder.png";
+import Placeholder from "assets/images/file.svg";
 
 // Interfaces
 interface iFields {
@@ -33,6 +32,7 @@ export default function InputFile({ onFileChange, settings, state }: iProps) {
     <fieldset className="file-input">
       <label className="custom-file-chooser">
         {label}
+        <img src={File} alt="User generated content" />
         <input
           accept="application/pdf,text/xml, image/jpg"
           onChange={(event) => onFileChange(event)}

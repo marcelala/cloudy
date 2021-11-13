@@ -11,6 +11,7 @@ export default function Form() {
   const [fileData, setFileData] = useState(newFile);
   const [progress, setProgress] = useState(0);
   const fields = require("data/formFields.json");
+  const { fileURL, name, author, metadata } = fileData;
 
   function onChange(key: string, value: string) {
     const field = { [key]: value };
@@ -20,20 +21,22 @@ export default function Form() {
   async function onFileChange(event: any) {
     event.preventDefault();
     const file = event.target.files[0];
+    await cloudUpload(file);
+  }
+
+  async function cloudUpload(file: any) {
+    if (!file) return;
     const fileExtension = file.name.split(".").pop();
     const customData = {
       customMetadata: {
-        author: fileData.author,
-        customName: fileData.name + "." + fileExtension,
+        author: author || "unknown",
+        customName: name || file.name,
+        extension: fileExtension,
       },
     };
-    await cloudUpload(file, customData);
-  }
-  async function cloudUpload(file: any, metadata: any) {
-    if (!file) return;
-    const filePath = `files/${file.name}`;
+    const filePath = `files/${fileData.name || file.name}.${fileExtension}`;
     const storageReference = ref(storageInstance, filePath);
-    const uploadTask = uploadBytesResumable(storageReference, file, metadata);
+    const uploadTask = uploadBytesResumable(storageReference, file, customData);
     uploadTask.on(
       "state_changed",
       (snapshot) => {
@@ -60,7 +63,7 @@ export default function Form() {
           // @ts-ignore
           metadata: savedMetadata,
         });
-        console.log("after upload", fileData);
+        console.log("after upload", savedMetadata);
       }
     );
   }
@@ -85,37 +88,38 @@ export default function Form() {
 
   async function onSave(fileData: iFile, e: FormEvent) {
     e.preventDefault();
+    const { name, size, customMetadata, fullPath, timeCreated, contentType } =
+      metadata;
     const databaseBackup = {
-      fileURL: fileData.fileURL,
-      name: fileData.name,
-      id: fileData.id,
-      author: fileData.author,
+      fileURL: fileURL,
+      name: name,
+      author: author,
+      metadata: {
+        name: metadata.name,
+        extension: customMetadata.extension,
+        size: size,
+        fullPath: fullPath,
+        timeCreated: timeCreated,
+        contentType: contentType,
+      },
     };
     const documentID = await createDocument("files", databaseBackup);
     fileData.id = documentID;
     documentID
-      ? alert("File added successfully")
+      ? setFileData(newFile)
       : alert(" Yikes, there was a problem adding this file");
   }
 
   return (
     <form className="form" onSubmit={(e) => onSave(fileData, e)}>
-      <InputField
-        onChange={onChange}
-        settings={fields.name}
-        state={fileData.name}
-      />
-      <InputField
-        onChange={onChange}
-        settings={fields.author}
-        state={fileData.author}
-      />
+      <InputField onChange={onChange} settings={fields.name} state={name} />
+      <InputField onChange={onChange} settings={fields.author} state={author} />
       <InputFile
         onFileChange={onFileChange}
         settings={fields.fileURL}
-        state={fileData.fileURL}
+        state={fileURL}
       />
-      <h2>Uploading done {progress}%</h2>
+      <h2>Uploading {progress}%</h2>
       <button className="btn-primary" type={"submit"}>
         Save
       </button>
