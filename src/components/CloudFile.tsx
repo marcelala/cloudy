@@ -10,20 +10,17 @@ type iProps = {
 
 export default function CloudFile({ file }: iProps) {
   const { name, fileURL, author, metadata, id } = file;
-  const { customName, size, timeCreated, extension } = metadata;
+  const { customName, size, timeCreated, fullPath, extension } = metadata;
 
   async function onDelete(e: FormEvent) {
     e.preventDefault();
-    if (e.currentTarget === null) return;
-    const itemToDelete = file.id;
-    console.log("id to delete", itemToDelete);
     if (window.confirm("Are you sure you want to delete this file forever?")) {
       if (id != null) {
         await deleteDocument("files", id);
       }
-      await deleteFile(file.name);
-      alert("File deleted");
+      await deleteFile(fullPath);
     }
+    return;
   }
 
   return (

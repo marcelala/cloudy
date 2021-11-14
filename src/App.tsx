@@ -1,11 +1,10 @@
-import React, { FormEvent, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Spinner from "./components/Spinner";
 import "./styles/index.sass";
 import Form from "components/Form";
 import iFile from "./types/iFile";
-import { deleteDocument, getCollection } from "./firebaseServices/firestore";
+import { getCollection } from "./firebaseServices/firestore";
 import CloudFile from "./components/CloudFile";
-import { deleteFile } from "./firebaseServices/storage";
 function App() {
   const initialState: any[] = [];
   const [loadedData, setLoadedData] = useState(initialState);

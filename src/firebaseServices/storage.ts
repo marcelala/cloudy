@@ -22,14 +22,13 @@ export function alertError(error: any) {
   }
 }
 
-export async function deleteFile(file: any) {
-  const filePath = `files/${file.name}`;
+export async function deleteFile(filePath: string) {
   const storageReference = ref(storageInstance, filePath);
   deleteObject(storageReference)
     .then(() => {
-      // File deleted successfully
+      alert("File deleted successfully");
     })
     .catch((error) => {
-      // Uh-oh, an error occurred!
+      alert("Uh-oh, there was a problem deleting this file");
     });
 }
