@@ -5,6 +5,7 @@ import Form from "components/Form";
 import iFile from "./types/iFile";
 import { getCollection } from "./firebaseServices/firestore";
 import CloudFile from "./components/CloudFile";
+import Hero from "./components/Hero";
 function App() {
   const initialState: any[] = [];
   const [loadedData, setLoadedData] = useState(initialState);
@@ -34,15 +35,14 @@ function App() {
 
   return (
     <div className="App">
-      <h1>EsterCloud</h1>
-      <p>
-        Welcome to our cloud storage service. If you would like to alter the
-        file's information just fill out the form below before uploading.
-      </p>
+      <Hero />
       <Form />
-      {status === 0 && <Spinner />}
-      {status === 1 && <ul>{Files}</ul>}
-      {status === 2 && <p>Error 🚨</p>}
+      <main>
+        <h2>Your files</h2>
+        {status === 0 && <Spinner />}
+        {status === 1 && <ul>{Files}</ul>}
+        {status === 2 && <p>Error 🚨</p>}
+      </main>
     </div>
   );
 }

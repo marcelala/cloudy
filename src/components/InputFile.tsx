@@ -1,6 +1,8 @@
 // NPM packages
 // Project files
 import Placeholder from "assets/images/file.svg";
+import Icon from "./Icon";
+import { useState } from "react";
 
 // Interfaces
 interface iFields {
@@ -16,23 +18,28 @@ interface iProps {
 
 export default function InputFile({ onFileChange, settings, state }: iProps) {
   const { label, key, instructions } = settings;
-
+  const [preview, setPreview] = useState("file");
   // Properties
   const File = state === "" ? Placeholder : state;
+
+  function getPreview(event: React.ChangeEvent<HTMLInputElement>) {
+    // @ts-ignore
+    const file = event.target.files[0];
+    const fileExtension = file.name.split(".").pop();
+    const imageName = `${fileExtension}`;
+    imageName ? setPreview(imageName) : setPreview("cloud");
+  }
 
   return (
     <fieldset className="file-input">
       <label className="custom-file-chooser">
         {label}
-        <img src={File} alt="User generated content" />
+        <Icon fileName={preview} />
         <input
-          accept="application/pdf,text/xml, image/jpg"
-          onChange={(event) => onFileChange(event)}
+          accept=".pdf ,.xml, .jpeg"
+          onChange={(event) => onFileChange(event).then(getPreview(event))}
           type="file"
         />
-        <a href={File} target="_blank" rel="noreferrer">
-          Download file
-        </a>
         <small>{instructions}</small>
       </label>
     </fieldset>

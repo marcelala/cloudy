@@ -73,18 +73,18 @@ export default function Form() {
 
   async function onSave(fileData: iFile, e: FormEvent) {
     e.preventDefault();
-    const { name, size, customMetadata, fullPath, timeCreated, contentType } =
+    const { size, customMetadata, fullPath, timeCreated, contentType } =
       metadata;
     const databaseBackup = {
-      fileURL: fileURL,
-      name: name,
-      author: author,
+      fileURL,
+      name,
+      author,
       metadata: {
         extension: customMetadata.extension,
-        size: size,
-        fullPath: fullPath,
-        timeCreated: timeCreated,
-        contentType: contentType,
+        size,
+        fullPath,
+        timeCreated,
+        contentType,
       },
     };
     const documentID = await createDocument("files", databaseBackup);
@@ -94,18 +94,24 @@ export default function Form() {
   }
 
   return (
-    <form className="form" onSubmit={(e) => onSave(fileData, e)}>
-      <InputField onChange={onChange} settings={fields.name} state={name} />
-      <InputField onChange={onChange} settings={fields.author} state={author} />
-      <InputFile
-        onFileChange={onFileChange}
-        settings={fields.fileURL}
-        state={fileURL}
-      />
-      <h2>Uploading {progress}%</h2>
-      <button className="btn-primary" type={"submit"}>
-        Save
-      </button>
-    </form>
+    <section id="form">
+      <form onSubmit={(e) => onSave(fileData, e)}>
+        <InputField onChange={onChange} settings={fields.name} state={name} />
+        <InputField
+          onChange={onChange}
+          settings={fields.author}
+          state={author}
+        />
+        <InputFile
+          onFileChange={onFileChange}
+          settings={fields.fileURL}
+          state={fileURL}
+        />
+        <h2>Uploading {progress}%</h2>
+        <button className="btn-primary" type={"submit"}>
+          Save
+        </button>
+      </form>
+    </section>
   );
 }
