@@ -1,11 +1,13 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
+import { FilesDataProvider } from "./state/FilesContext";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <FilesDataProvider>
+      <App />
+    </FilesDataProvider>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById("root")
 );

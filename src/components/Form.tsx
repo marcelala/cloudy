@@ -1,22 +1,27 @@
-import InputFile from "./InputFile";
-import InputField from "./InputField";
+//dependencies
 import { FormEvent, useState } from "react";
-import { newFile } from "../types/newFile";
-import iFile from "../types/iFile";
-import { createDocument } from "../firebaseServices/firestore";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+
+//project files
+import { useDataContext } from "../state/FilesContext";
+import { createDocument } from "../firebaseServices/firestore";
 import { storageInstance } from "../firebaseServices/firebase";
 import { alertError } from "../firebaseServices/storage";
+import InputFile from "./InputFile";
+import InputField from "./InputField";
+import { newFile } from "../types/newFile";
+import iFile from "../types/iFile";
 
 export default function Form() {
-  const [fileData, setFileData] = useState(newFile);
+  const { filesData, setFilesData } = useDataContext();
+  const [newFileData, setNewFileData] = useState(newFile);
   const [progress, setProgress] = useState(0);
   const fields = require("data/formFields.json");
-  const { fileURL, name, author, metadata } = fileData;
+  const { fileURL, name, author, metadata } = newFileData;
 
   function onChange(key: string, value: string) {
     const field = { [key]: value };
-    setFileData({ ...fileData, ...field });
+    setNewFileData({ ...newFileData, ...field });
   }
 
   async function onFileChange(event: any) {
@@ -30,12 +35,12 @@ export default function Form() {
     const fileExtension = file.name.split(".").pop();
     const myMetadata = {
       customMetadata: {
-        author: author || "unknown",
+        author: author,
         extension: fileExtension,
       },
     };
-    const fileName = fileData.name
-      ? `${fileData.name}.${fileExtension}`
+    const fileName = newFileData.name
+      ? `${newFileData.name}.${fileExtension}`
       : file.name;
     const filePath = `files/${fileName}`;
     const storageReference = ref(storageInstance, filePath);
@@ -47,32 +52,24 @@ export default function Form() {
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100
         );
         setProgress(progress);
-        switch (snapshot.state) {
-          case "paused":
-            console.log("Upload is paused");
-            break;
-          case "running":
-            console.log("Upload is running");
-            break;
-        }
       },
       (error) => alertError(error),
       async () => {
         const savedMetadata = uploadTask.snapshot.metadata;
         const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-        setFileData({
-          ...fileData,
+        setNewFileData({
+          ...newFileData,
           fileURL: downloadURL,
-          // @ts-ignore
           metadata: savedMetadata,
         });
-        console.log("after upload", savedMetadata);
       }
     );
   }
 
   async function onSave(fileData: iFile, e: FormEvent) {
     e.preventDefault();
+    if (author.length < 1)
+      setNewFileData({ ...newFileData, author: "unknown" });
     const { size, customMetadata, fullPath, timeCreated, contentType } =
       metadata;
     const databaseBackup = {
@@ -89,13 +86,16 @@ export default function Form() {
     };
     const documentID = await createDocument("files", databaseBackup);
     documentID
-      ? setFileData(newFile)
+      ? setFilesData([...filesData, databaseBackup])
       : alert(" Yikes, there was a problem adding this file");
+    setProgress(0);
+    alert("File uploaded");
+    await setNewFileData(newFile);
   }
 
   return (
     <section id="form">
-      <form onSubmit={(e) => onSave(fileData, e)}>
+      <form onSubmit={(e) => onSave(newFileData, e)}>
         <InputField onChange={onChange} settings={fields.name} state={name} />
         <InputField
           onChange={onChange}
