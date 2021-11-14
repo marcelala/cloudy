@@ -1,0 +1,20 @@
+#sorter
+  width: 100%
+  height: auto
+  display: grid
+  column-gap: $space-medium
+  font-size: 0.8rem
+  grid-template-areas: "title byName bySize"
+  justify-content: center
+  align-items: baseline
+  margin: 0 auto
+
+  .sort-label
+    grid-area: title
+
+  .byName
+    grid-area: byName
+
+  .bySize
+    grid-area: bySize
+

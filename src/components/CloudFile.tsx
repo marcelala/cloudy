@@ -18,9 +18,9 @@ export default function CloudFile({ file }: iProps) {
   const date = moment(timeCreated).format("DD-MM-YYYY");
   const timeAgo = moment(timeCreated).startOf("minute").fromNow();
 
-  async function removeFile(file: iFile) {
+  function removeFile() {
     const clonedList = [...filesData];
-    const newState = clonedList.filter((item) => item.id !== file.id);
+    const newState = clonedList.filter((item) => item.id !== id);
     console.log(newState, "newState");
     return newState;
   }
@@ -31,7 +31,7 @@ export default function CloudFile({ file }: iProps) {
         await deleteDocument("files", id);
       }
       await deleteFile(fullPath);
-      setFilesData(await removeFile(file));
+      setFilesData(removeFile());
     }
     return;
   }

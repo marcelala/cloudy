@@ -1,12 +1,16 @@
+//dependencies
 import React, { useCallback, useEffect, useState } from "react";
-import Spinner from "./components/Spinner";
+//project files
 import "./styles/index.sass";
-import Form from "components/Form";
-import iFile from "./types/iFile";
-import { getCollection } from "./firebaseServices/firestore";
-import CloudFile from "./components/CloudFile";
-import Hero from "./components/Hero";
 import { useDataContext } from "./state/FilesContext";
+import { getCollection } from "./firebaseServices/firestore";
+import Spinner from "components/Spinner";
+import Hero from "components/Hero";
+import Form from "components/Form";
+import Sorter from "components/Sorter";
+import CloudFile from "components/CloudFile";
+import iFile from "./types/iFile";
+
 function App() {
   const { filesData, setFilesData } = useDataContext();
   const [loadedData, setLoadedData] = useState(filesData);
@@ -19,9 +23,7 @@ function App() {
       // @ts-ignore
       setLoadedData(storedFiles);
       setStatus(1);
-      console.log("fetch");
       setFilesData(storedFiles);
-      console.log("context", filesData);
     } catch {
       setStatus(2);
     }
@@ -32,7 +34,7 @@ function App() {
   }, [getFiles]);
 
   const Files = filesData.map((file: iFile, index) => {
-    if (loadedData.length === 0) {
+    if (filesData.length === 0) {
       return null;
     }
     return <CloudFile key={index} file={file} />;
@@ -44,8 +46,13 @@ function App() {
       <Form />
       <main>
         <h2>Your files</h2>
+        <Sorter />
         {status === 0 && <Spinner />}
-        {status === 1 && <ul>{Files}</ul>}
+        {status === 1 && filesData.length === 0 ? (
+          <p>You haven't added any files yet</p>
+        ) : (
+          <ul>{Files}</ul>
+        )}
         {status === 2 && <p>Error 🚨</p>}
       </main>
     </div>
