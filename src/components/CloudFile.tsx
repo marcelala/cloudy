@@ -10,7 +10,7 @@ type iProps = {
 
 export default function CloudFile({ file }: iProps) {
   const { name, fileURL, author, metadata, id } = file;
-  const { customName, size, timeCreated, fullPath, extension } = metadata;
+  const { size, timeCreated, fullPath, extension } = metadata;
 
   async function onDelete(e: FormEvent) {
     e.preventDefault();
@@ -27,7 +27,7 @@ export default function CloudFile({ file }: iProps) {
     <li>
       <a href={fileURL} target="_blank" rel="noreferrer" download>
         <Icon fileName={extension} />
-        <span>{name || customName}</span>
+        <span>{name}</span>
         <span>{size}</span>
         <span>{author}</span>
         <span>{timeCreated}</span>

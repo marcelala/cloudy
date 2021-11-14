@@ -28,16 +28,18 @@ export default function Form() {
   async function cloudUpload(file: any) {
     if (!file) return;
     const fileExtension = file.name.split(".").pop();
-    const customData = {
+    const myMetadata = {
       customMetadata: {
         author: author || "unknown",
-        customName: name || file.name,
         extension: fileExtension,
       },
     };
-    const filePath = `files/${fileData.name || file.name}.${fileExtension}`;
+    const fileName = fileData.name
+      ? `${fileData.name}.${fileExtension}`
+      : file.name;
+    const filePath = `files/${fileName}`;
     const storageReference = ref(storageInstance, filePath);
-    const uploadTask = uploadBytesResumable(storageReference, file, customData);
+    const uploadTask = uploadBytesResumable(storageReference, file, myMetadata);
     uploadTask.on(
       "state_changed",
       (snapshot) => {
@@ -78,7 +80,6 @@ export default function Form() {
       name: name,
       author: author,
       metadata: {
-        customName: customMetadata.customName,
         extension: customMetadata.extension,
         size: size,
         fullPath: fullPath,
