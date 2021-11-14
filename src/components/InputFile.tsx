@@ -1,11 +1,10 @@
-// NPM packages
+// dependencies
 import { useState } from "react";
 
-// Project files
-import Placeholder from "assets/images/file.svg";
+// project files
 import Icon from "./Icon";
 
-// Interfaces
+// interfaces
 interface iFields {
   key: string;
   label: string;
@@ -20,9 +19,7 @@ interface iProps {
 export default function InputFile({ onFileChange, settings, state }: iProps) {
   const { label, key, instructions } = settings;
   const [preview, setPreview] = useState("file");
-  // Properties
-  const File = state === "" ? Placeholder : state;
-
+  // methods
   function getPreview(event: React.ChangeEvent<HTMLInputElement>) {
     // @ts-ignore
     const file = event.target.files[0];
@@ -35,13 +32,15 @@ export default function InputFile({ onFileChange, settings, state }: iProps) {
     <fieldset className="file-input">
       <label className="custom-file-chooser">
         {label}
-        <Icon fileName={preview} />
-        <input
-          accept=".pdf ,.xml, .jpeg"
-          onChange={(event) => onFileChange(event).then(getPreview(event))}
-          type="file"
-          required
-        />
+        <div className="preview-input-wrapper">
+          <Icon fileName={preview} />
+          <input
+            accept=".pdf ,.xml, .jpeg"
+            onChange={(event) => onFileChange(event).then(getPreview(event))}
+            type="file"
+            required
+          />
+        </div>
         <small>{instructions}</small>
       </label>
     </fieldset>

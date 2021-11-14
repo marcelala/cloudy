@@ -41,30 +41,34 @@ fieldset
     @include label
   small
     @include small
-    padding: 0
+    padding: $space-x-small
+    text-align: end
   input
     @include field
-    width: 100%
-    margin-top: $space-small
     margin-bottom: 0.2rem
     padding: $space-x-small
-    height: auto
     font-size: .8rem
     &::file-selector-button
       background-color: $primary
       color: $white
       @include button
+      width: auto
       @include hover-lift
   img
     @include field
     width: 3rem
     height: auto
-    max-height: 5rem
+    max-height: 3rem
     object-fit: cover
     background-color: transparent
     border: .5px dashed $primary
     padding: 0
+    margin-right: $space-small
 
-
-
+.preview-input-wrapper
+  display: flex
+  flex-direction: row
+  width: 100%
+  height: auto
+  justify-content: space-between
 
