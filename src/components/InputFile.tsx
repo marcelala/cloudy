@@ -20,12 +20,14 @@ export default function InputFile({ onFileChange, settings, state }: iProps) {
   const { label, key, instructions } = settings;
   const [preview, setPreview] = useState("file");
   // methods
-  function getPreview(event: React.ChangeEvent<HTMLInputElement>) {
-    // @ts-ignore
-    const file = event.target.files[0];
-    const fileExtension = file.name.split(".").pop();
-    const imageName = `${fileExtension}`;
-    imageName ? setPreview(imageName) : setPreview("cloud");
+  async function getPreview(event: any) {
+    if (event.target.files[0] === undefined || null) setPreview("cloud-upload");
+    else {
+      const file = event.target.files[0];
+      const fileExtension = file.name.split(".").pop();
+      const imageName = `${fileExtension}`;
+      imageName ? setPreview(imageName) : setPreview("cloud-upload");
+    }
   }
 
   return (
@@ -36,7 +38,10 @@ export default function InputFile({ onFileChange, settings, state }: iProps) {
           <Icon fileName={preview} />
           <input
             accept=".pdf ,.xml, .jpeg"
-            onChange={(event) => onFileChange(event).then(getPreview(event))}
+            onChange={(event) => {
+              onFileChange(key, event);
+              getPreview(event);
+            }}
             type="file"
             required
           />

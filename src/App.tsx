@@ -17,17 +17,20 @@ function App() {
 
   const [status, setStatus] = useState(0); // 0 pending, 1 ready, 2 error
 
-  const getFiles = useCallback(async (path: string) => {
-    try {
-      const storedFiles = await getCollection(path);
-      // @ts-ignore
-      setLoadedData(storedFiles);
-      setStatus(1);
-      setFilesData(storedFiles);
-    } catch {
-      setStatus(2);
-    }
-  }, []);
+  const getFiles = useCallback(
+    async (path: string) => {
+      try {
+        const storedFiles = await getCollection(path);
+        // @ts-ignore
+        setLoadedData(storedFiles);
+        setStatus(1);
+        setFilesData(storedFiles);
+      } catch {
+        setStatus(2);
+      }
+    },
+    [setFilesData]
+  );
 
   useEffect(() => {
     getFiles("files");

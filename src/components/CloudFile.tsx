@@ -21,7 +21,6 @@ export default function CloudFile({ file }: iProps) {
   function removeFile() {
     const clonedList = [...filesData];
     const newState = clonedList.filter((item) => item.id !== id);
-    console.log(newState, "newState");
     return newState;
   }
 

@@ -24,9 +24,10 @@ export default function Form() {
     setNewFileData({ ...newFileData, ...field });
   }
 
-  async function onFileChange(event: any) {
+  async function onFileChange(key: string, event: any) {
     event.preventDefault();
     const file = event.target.files[0];
+    onChange(key, file);
     await cloudUpload(file);
   }
 
@@ -68,20 +69,16 @@ export default function Form() {
 
   async function onSave(fileData: iFile, e: FormEvent) {
     e.preventDefault();
-    if (author.length < 1)
-      setNewFileData({ ...newFileData, author: "unknown" });
-    const { size, customMetadata, fullPath, timeCreated, contentType } =
-      metadata;
+    const { size, customMetadata, fullPath, timeCreated } = metadata;
     const databaseBackup = {
       fileURL,
-      name,
-      author,
+      name: name || metadata.name,
+      author: author || "Unknown",
       metadata: {
         extension: customMetadata.extension,
         size,
         fullPath,
         timeCreated,
-        contentType,
       },
     };
     const documentID = await createDocument("files", databaseBackup);
@@ -90,7 +87,7 @@ export default function Form() {
       : alert(" Yikes, there was a problem adding this file");
     setProgress(0);
     alert("File uploaded");
-    await setNewFileData(newFile);
+    setNewFileData(newFile);
   }
 
   return (
