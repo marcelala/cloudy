@@ -45,25 +45,26 @@ fieldset
     text-align: end
   input
     @include field
-    margin-bottom: 0.2rem
-    padding: $space-x-small
+    padding: 0.2rem
     font-size: .8rem
+    margin: auto 0
     &::file-selector-button
-      background-color: $primary
-      color: $white
       @include button
+      background-color: $primary
+      font-size: .8rem
+      color: $white
       width: auto
       @include hover-lift
   img
     @include field
-    width: 3rem
+    width: 4rem
     height: auto
-    max-height: 3rem
     object-fit: cover
     background-color: transparent
-    border: .5px dashed $primary
-    padding: 0
-    margin-right: $space-small
+    border: none
+    padding: 0.2rem 0
+    margin: 0
+    margin-right: $space-x-small
 
 .preview-input-wrapper
   display: flex
@@ -71,4 +72,5 @@ fieldset
   width: 100%
   height: auto
   justify-content: space-between
+  align-items: center
 
