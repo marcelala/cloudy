@@ -1,8 +1,9 @@
 // NPM packages
+import { useState } from "react";
+
 // Project files
 import Placeholder from "assets/images/file.svg";
 import Icon from "./Icon";
-import { useState } from "react";
 
 // Interfaces
 interface iFields {
@@ -39,6 +40,7 @@ export default function InputFile({ onFileChange, settings, state }: iProps) {
           accept=".pdf ,.xml, .jpeg"
           onChange={(event) => onFileChange(event).then(getPreview(event))}
           type="file"
+          required
         />
         <small>{instructions}</small>
       </label>

@@ -7,16 +7,18 @@ import { createDocument } from "../firebaseServices/firestore";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storageInstance } from "../firebaseServices/firebase";
 import { alertError } from "../firebaseServices/storage";
+import { useDataContext } from "../state/FilesContext";
 
 export default function Form() {
-  const [fileData, setFileData] = useState(newFile);
+  const { filesData, setFilesData } = useDataContext();
+  const [newFileData, setNewFileData] = useState(newFile);
   const [progress, setProgress] = useState(0);
   const fields = require("data/formFields.json");
-  const { fileURL, name, author, metadata } = fileData;
+  const { fileURL, name, author, metadata } = newFileData;
 
   function onChange(key: string, value: string) {
     const field = { [key]: value };
-    setFileData({ ...fileData, ...field });
+    setNewFileData({ ...newFileData, ...field });
   }
 
   async function onFileChange(event: any) {
@@ -34,8 +36,8 @@ export default function Form() {
         extension: fileExtension,
       },
     };
-    const fileName = fileData.name
-      ? `${fileData.name}.${fileExtension}`
+    const fileName = newFileData.name
+      ? `${newFileData.name}.${fileExtension}`
       : file.name;
     const filePath = `files/${fileName}`;
     const storageReference = ref(storageInstance, filePath);
@@ -60,13 +62,11 @@ export default function Form() {
       async () => {
         const savedMetadata = uploadTask.snapshot.metadata;
         const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-        setFileData({
-          ...fileData,
+        setNewFileData({
+          ...newFileData,
           fileURL: downloadURL,
-          // @ts-ignore
           metadata: savedMetadata,
         });
-        console.log("after upload", savedMetadata);
       }
     );
   }
@@ -89,13 +89,14 @@ export default function Form() {
     };
     const documentID = await createDocument("files", databaseBackup);
     documentID
-      ? setFileData(newFile)
+      ? setFilesData([...filesData, databaseBackup])
       : alert(" Yikes, there was a problem adding this file");
+    setNewFileData(newFile);
   }
 
   return (
     <section id="form">
-      <form onSubmit={(e) => onSave(fileData, e)}>
+      <form onSubmit={(e) => onSave(newFileData, e)}>
         <InputField onChange={onChange} settings={fields.name} state={name} />
         <InputField
           onChange={onChange}
