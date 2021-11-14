@@ -6,6 +6,7 @@ import iFile from "../types/iFile";
 import { createDocument } from "../firebaseServices/firestore";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storageInstance } from "../firebaseServices/firebase";
+import { alertError } from "../firebaseServices/storage";
 
 export default function Form() {
   const [fileData, setFileData] = useState(newFile);
@@ -68,24 +69,6 @@ export default function Form() {
     );
   }
 
-  function alertError(error: any) {
-    console.error("Upload failed", error);
-    switch (error.code) {
-      case "storage/object-not-found":
-        alert("File doesn't exist");
-        break;
-      case "storage/unauthorized":
-        alert("User doesn't have permission to access the object");
-        break;
-      case "storage/canceled":
-        alert("User canceled the upload");
-        break;
-      case "storage/unknown":
-        alert("Unknown error occurred, inspect the server response");
-        break;
-    }
-  }
-
   async function onSave(fileData: iFile, e: FormEvent) {
     e.preventDefault();
     const { name, size, customMetadata, fullPath, timeCreated, contentType } =
@@ -95,7 +78,7 @@ export default function Form() {
       name: name,
       author: author,
       metadata: {
-        name: metadata.name,
+        customName: customMetadata.customName,
         extension: customMetadata.extension,
         size: size,
         fullPath: fullPath,
@@ -104,7 +87,6 @@ export default function Form() {
       },
     };
     const documentID = await createDocument("files", databaseBackup);
-    fileData.id = documentID;
     documentID
       ? setFileData(newFile)
       : alert(" Yikes, there was a problem adding this file");

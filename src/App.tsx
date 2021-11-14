@@ -5,6 +5,7 @@ import Form from "components/Form";
 import iFile from "./types/iFile";
 import { deleteDocument, getCollection } from "./firebaseServices/firestore";
 import CloudFile from "./components/CloudFile";
+import { deleteFile } from "./firebaseServices/storage";
 function App() {
   const initialState: any[] = [];
   const [loadedData, setLoadedData] = useState(initialState);
@@ -25,21 +26,20 @@ function App() {
     console.log("fetch");
   }, [getFiles]);
 
-  const Files = loadedData.map((file: iFile) => (
-    //@ts-ignore
-    <CloudFile key={file.id} file={file} onClick={onDelete} />
-  ));
-
-  async function onDelete(e: FormEvent) {
-    const itemToDelete = e.currentTarget;
-    if (window.confirm("Are you sure you want to delete this file forever?")) {
-      await deleteDocument("topics", itemToDelete.id);
-      alert("Topic deleted");
+  const Files = loadedData.map((file: iFile, index) => {
+    if (loadedData.length === 0) {
+      return null;
     }
-  }
+    return <CloudFile key={file.id} file={file} />;
+  });
 
   return (
     <div className="App">
+      <h1>EsterCloud</h1>
+      <p>
+        Welcome to our cloud storage service. If you would like to alter the
+        file's information just fill out the form below before uploading.
+      </p>
       <Form />
       {status === 0 && <Spinner />}
       {status === 1 && <ul>{Files}</ul>}
